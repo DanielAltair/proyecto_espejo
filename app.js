@@ -25,40 +25,44 @@ async function inicializarApp() {
 
 // 4. FUNCIÓN DE RENDERIZADO: Encargada de pintar los nodos en el HTML
 function pintarTareas() {
-    listaContenedor.innerHTML = '';
+  listaContenedor.innerHTML = '';
 
-    const tareasFiltradas = tareas.filter(tarea => {
-        if (filtroActual === 'Pendientes') return !tarea.completada;
-        if (filtroActual === 'Completadas') return tarea.completada;
-        return true;
-    });
+  const tareasFiltradas = tareas.filter(tarea => {
+    if (filtroActual === 'Pendientes') return !tarea.completada;
+    if (filtroActual === 'Completadas') return tarea.completada;
+    return true;
+  });
 
-    tareasFiltradas.forEach(tarea => {
-        const li = document.createElement('li');
-    });
-    tareasFiltradas.forEach(tarea => {
+  tareasFiltradas.forEach(tarea => {
     const li = document.createElement('li');
+    li.classList.add('item-tarea', tarea.prioridad);
 
-    li.classList.add(`prioridad-${tarea.prioridad.toLowerCase()}`);
     if (tarea.completada) {
-        li.classList.add('completada');
+      li.classList.add('completada');
     }
 
+    const titulo = document.createElement('span');
+    titulo.textContent = tarea.titulo;
+    li.appendChild(titulo);
+
     const botonEstado = document.createElement('button');
-    botonEstado.textContent = tarea.completada ? 'Marcar pendiente' : 'Marcar completada';
     botonEstado.type = 'button';
+    botonEstado.textContent = tarea.completada
+      ? 'Marcar pendiente'
+      : 'Marcar completada';
+
     botonEstado.addEventListener('click', () => {
-        tareas = tareas.map(item =>
+      tareas = tareas.map(item =>
         item.id === tarea.id
-            ? { ...item, completada: !item.completada }
-            : item
-        );
-        pintarTareas();
+          ? { ...item, completada: !item.completada }
+          : item
+      );
+      pintarTareas();
     });
 
     li.appendChild(botonEstado);
     listaContenedor.appendChild(li);
-    });
+  });
 }
 
 // 5. MANEJO DE EVENTOS: Captura de formulario
