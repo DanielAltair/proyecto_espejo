@@ -34,12 +34,17 @@
     </section>
 
     <!-- Contenedor Dinámico para las Tareas -->
-    <main class="tasks-section">
-      <div id="loading-state" class="loading">Cargando tareas desde el servidor...</div>
-      <ul id="lista-tareas">
-        <!-- Las tareas generadas con JS se inyectarán aquí -->
-      </ul>
-    </main>
+   <main class="tasks-section">
+  <div id="loading-state" class="loading">
+    Cargando tareas desde el servidor...
+  </div>
+
+  <h2>Lista interactiva</h2>
+  <ul id="lista-tareas"></ul>
+
+  <h2>Lista espejo (solo lectura)</h2>
+  <ul id="lista-espejo"></ul>
+</main>
   </div>
 
   <script src="app.js"></script>

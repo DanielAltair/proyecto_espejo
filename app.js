@@ -13,6 +13,7 @@ const formulario = document.querySelector('#form-tareas');
 const inputTitulo = document.querySelector('#input-titulo');
 const selectPrioridad = document.querySelector('#select-prioridad');
 const listaContenedor = document.querySelector('#lista-tareas');
+const listaEspejo = document.querySelector('#lista-espejo');
 const loadingState = document.querySelector('#loading-state');
 const botonesFiltro = document.querySelectorAll('.btn-filtro');
 
@@ -26,6 +27,7 @@ async function inicializarApp() {
 // 4. FUNCIÓN DE RENDERIZADO: Encargada de pintar los nodos en el HTML
 function pintarTareas() {
   listaContenedor.innerHTML = '';
+  listaEspejo.innerHTML = '';
 
   const tareasFiltradas = tareas.filter(tarea => {
     if (filtroActual === 'Pendientes') return !tarea.completada;
@@ -51,17 +53,24 @@ function pintarTareas() {
       ? 'Marcar pendiente'
       : 'Marcar completada';
 
-    botonEstado.addEventListener('click', () => {
-      tareas = tareas.map(item =>
-        item.id === tarea.id
-          ? { ...item, completada: !item.completada }
-          : item
-      );
-      pintarTareas();
-    });
+    // El contenedor usará estos datos para identificar el botón y la tarea.
+    botonEstado.classList.add('btn-accion');
+    botonEstado.dataset.id = tarea.id;
 
     li.appendChild(botonEstado);
     listaContenedor.appendChild(li);
+
+    const liEspejo = document.createElement('li');
+    liEspejo.classList.add('item-tarea', tarea.prioridad);
+
+    const estado = tarea.completada ? 'Hecho' : 'Pendiente';
+    liEspejo.textContent = `${tarea.titulo} — Estado: ${estado}`;
+
+    if (tarea.completada) {
+      liEspejo.classList.add('completada');
+    }
+
+    listaEspejo.appendChild(liEspejo);
   });
 }
 
@@ -96,6 +105,20 @@ botonesFiltro.forEach(boton => {
     filtroActual = boton.dataset.filtro;
     pintarTareas();
   });
+});
+
+listaContenedor.addEventListener('click', (event) => {
+  if (!event.target.classList.contains('btn-accion')) return;
+
+  const idBuscado = Number(event.target.dataset.id);
+
+  tareas = tareas.map(tarea =>
+    tarea.id === idBuscado
+      ? { ...tarea, completada: !tarea.completada }
+      : tarea
+  );
+
+  pintarTareas();
 });
 
 // Arrancar la aplicación
